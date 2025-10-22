@@ -1,3 +1,18 @@
+CREATE TABLE "user" (
+                        user_id SERIAL PRIMARY KEY,
+                        email VARCHAR(120) UNIQUE NOT NULL,
+                        username VARCHAR(100) UNIQUE,
+                        password_hash VARCHAR(255) NOT NULL,
+                        name VARCHAR(100) NOT NULL,
+                        surname VARCHAR(100) NOT NULL,
+                        role VARCHAR(20) NOT NULL CHECK (role IN ('student', 'staff', 'admin')),
+                        is_active BOOLEAN DEFAULT TRUE,
+                        consent_given BOOLEAN DEFAULT FALSE,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        last_login TIMESTAMP NULL
+);
+
 CREATE TABLE staff (
                        staff_id INT PRIMARY KEY,
                        department VARCHAR(100),
@@ -29,9 +44,9 @@ CREATE INDEX idx_student_course ON student(course);
 CREATE INDEX idx_user_role ON "user"(role);
 
 ALTER TABLE "user"
-ALTER COLUMN password_hash DROP NOT NULL,
-ALTER COLUMN username DROP NOT NULL,
-ADD COLUMN social_provider_id VARCHAR(255) UNIQUE NULL,
-ADD COLUMN social_provider VARCHAR(50) NULL;
+    ALTER COLUMN password_hash DROP NOT NULL,
+    ALTER COLUMN username DROP NOT NULL,
+    ADD COLUMN social_provider_id VARCHAR(255) UNIQUE NULL,
+    ADD COLUMN social_provider VARCHAR(50) NULL;
 
 CREATE INDEX idx_user_social_id ON "user"(social_provider_id);
