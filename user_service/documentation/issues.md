@@ -1,4 +1,4 @@
-## 🐛 Issue 1: Flyway Migration Not Visible Due to Incorrect Configuration Path
+## Issue 1: Flyway Migration Not Visible Due to Incorrect Configuration Path
 
 **Status:** **RESOLVED**
 
@@ -10,7 +10,7 @@ The issue was resolved by correcting the `flyway.locations` property and subsequ
 
 -----
 
-### 🛠️ Steps to Reproduce the Issue (Initial State)
+### Steps to Reproduce the Issue (Initial State)
 
 1.  **Configuration Error:** The `flyway_userservice.conf` file was incorrectly set:
     ```properties
@@ -24,7 +24,7 @@ The issue was resolved by correcting the `flyway.locations` property and subsequ
 
 -----
 
-### ✅ Resolution
+### Resolution
 
 The issue was fixed by modifying the `flyway.locations` property to reflect the correct relative path from the execution directory (`user_service/`).
 

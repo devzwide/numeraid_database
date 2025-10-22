@@ -19,13 +19,12 @@
 !user_service/migrations/*.sql
 
 # 3. Flyway
-# Exclude local Flyway configuration files that shouldn't be committed
+# Exclude local Flyway configuration files (Optional but safe to commit placeholder version)
 flyway.conf
-user_service/flyway_userservice.conf
 *.conf
 
 # 4. Environment Variables
-# Local environment settings
+# Crucial: Ignore files that hold actual FLYWAY_... credentials
 .env
 .env.*
 

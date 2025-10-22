@@ -1,39 +1,42 @@
 # Numeraid Database
 
-This repository contains the database schema and migration scripts for the Numeraid User Service. It uses Flyway for version-controlled database migrations.
+This repository contains the database schema, migrations, and documentation for the Numeraid user service.
 
-## Project Structure
+## Structure
 
-- `migrations/` - SQL migration scripts (Flyway format)
-- `flyway_userservice.conf` - Flyway configuration file
-- `documentation/` - Additional documentation (e.g., `database.md`)
+- `user_service/migrations/` — Flyway migration scripts for the user service database
+- `user_service/documentation/` — Database documentation
+- `user_service/flyway_userservice.conf` — Flyway configuration for migrations
 
 ## Getting Started
 
-### Prerequisites
-- [Flyway](https://flywaydb.org/) installed
-- Access to your target database (PostgreSQL)
-
-### Running Migrations
-
-1. Configure your database connection in `flyway_userservice.conf`.
-2. Run migrations:
+1. Clone the repository
+2. Copy `.env.example` to `.env` and set your database credentials:
    ```bash
-   flyway -configFiles=flyway_userservice.conf migrate
+   cp .env.example .env
+   # Edit .env to match your environment
+   ```
+3. Use the provided script to run Flyway commands (it will load environment variables automatically):
+   ```bash
+   ./migrate.sh migrate
+   ./migrate.sh info
+   ./migrate.sh clean
+   # etc.
    ```
 
-### Creating a New Migration
+## Requirements
+- Flyway
+- Supported SQL database (e.g., PostgreSQL, MySQL)
+- Bash shell (for the script)
 
-1. Add a new SQL file to the `migrations/` folder following the naming convention: `V<version>__<description>.sql` (e.g., `V2__add_users_table.sql`).
-2. Run the migration command as above.
+## Environment Variables
+The following environment variables must be set (see `.env.example`):
+- `FLYWAY_URL` — JDBC URL for your database
+- `FLYWAY_USER` — Database username
+- `FLYWAY_PASSWORD` — Database password
 
 ## Contributing
-
-- Fork the repository and create a feature branch.
-- Add or modify migration scripts as needed.
-- Submit a pull request with a clear description of your changes.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## License
-
 See [LICENSE](LICENSE) for details.
-
