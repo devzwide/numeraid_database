@@ -1,16 +1,27 @@
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+    RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
 CREATE TABLE "user" (
                         user_id SERIAL PRIMARY KEY,
                         email VARCHAR(120) UNIQUE NOT NULL,
                         username VARCHAR(100) UNIQUE,
-                        password_hash VARCHAR(255) NOT NULL,
+                        password_hash VARCHAR(255) NULL,
                         name VARCHAR(100) NOT NULL,
                         surname VARCHAR(100) NOT NULL,
+                        social_provider_id VARCHAR(255) UNIQUE,
+                        social_provider VARCHAR(50) NULL,
+                        profile_picture_url TEXT NULL,
                         role VARCHAR(20) NOT NULL CHECK (role IN ('student', 'staff', 'admin')),
                         is_active BOOLEAN DEFAULT TRUE,
                         consent_given BOOLEAN DEFAULT FALSE,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        last_login TIMESTAMP NULL
+                        last_login TIMESTAMP NULL,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE staff (
@@ -36,17 +47,25 @@ CREATE TABLE student (
                          FOREIGN KEY (student_id) REFERENCES "user"(user_id) ON DELETE CASCADE
 );
 
--- Indexes for fast lookups
+-- Indexes for fast lookups (matching index=True)
 CREATE INDEX idx_user_email ON "user"(email);
 CREATE INDEX idx_user_username ON "user"(username);
+CREATE INDEX idx_user_social_id ON "user"(social_provider_id);
+CREATE INDEX idx_user_role ON "user"(role);
 CREATE INDEX idx_staff_department ON staff(department);
 CREATE INDEX idx_student_course ON student(course);
-CREATE INDEX idx_user_role ON "user"(role);
 
-ALTER TABLE "user"
-    ALTER COLUMN password_hash DROP NOT NULL,
-    ALTER COLUMN username DROP NOT NULL,
-    ADD COLUMN social_provider_id VARCHAR(255) UNIQUE NULL,
-    ADD COLUMN social_provider VARCHAR(50) NULL;
+CREATE TRIGGER update_user_updated_at
+    BEFORE UPDATE ON "user"
+    FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();
 
-CREATE INDEX idx_user_social_id ON "user"(social_provider_id);
+CREATE TRIGGER update_staff_updated_at
+    BEFORE UPDATE ON "staff"
+    FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_student_updated_at
+    BEFORE UPDATE ON "student"
+    FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();
